@@ -59,7 +59,7 @@ export interface Applicant {
 }
 
 // ─── Re-engagement / drip campaign types ─────────────────────────────────────
-export type CadenceStepType = 'email' | 'sms' | 'task';
+export type CadenceStepType = 'email' | 'sms' | 'task' | 'ai';
 
 export interface CadenceStep {
   id: string;

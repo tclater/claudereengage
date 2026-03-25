@@ -46,6 +46,8 @@ export function NavBar({ currentPage, onNavigate }: NavBarProps) {
               ? '#7c3aed'
               : link.page === 'applicants'
               ? '#0a66c2'
+              : link.page === 'calendar'
+              ? '#0f766e'
               : '#2d7dd2';
 
           return (
@@ -65,6 +67,8 @@ export function NavBar({ currentPage, onNavigate }: NavBarProps) {
                     ? '#f5f3ff'
                     : link.page === 'applicants'
                     ? '#e8f0fe'
+                    : link.page === 'calendar'
+                    ? '#f0fdfa'
                     : '#eff6ff'
                   : 'transparent',
                 fontSize: 13,

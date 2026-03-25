@@ -2,7 +2,7 @@ import { useState } from 'react';
 import {
   Plus, ToggleLeft, ToggleRight, Pencil, Trash2,
   Mail, MessageSquare, ClipboardList, Zap, Users,
-  Clock, ChevronDown, ChevronUp, X, Check, AlertCircle,
+  Clock, ChevronDown, ChevronUp, X, Check, AlertCircle, Bot,
 } from 'lucide-react';
 import type { ReengagementRule, CadenceStep, CadenceStepType, JobBoard } from '../../types/candidate';
 import { mockReengagementRules } from '../../data/mockReengagementRules';
@@ -12,13 +12,25 @@ const STEP_ICONS: Record<CadenceStepType, React.ReactNode> = {
   email: <Mail size={13} />,
   sms:   <MessageSquare size={13} />,
   task:  <ClipboardList size={13} />,
+  ai:    <Bot size={13} />,
 };
 
 const STEP_COLORS: Record<CadenceStepType, { bg: string; color: string }> = {
   email: { bg: '#eff6ff', color: '#2563eb' },
   sms:   { bg: '#f0fdf4', color: '#16a34a' },
   task:  { bg: '#fefce8', color: '#92400e' },
+  ai:    { bg: '#f5f3ff', color: '#7c3aed' },
 };
+
+// What AI can do with a candidate when triggered
+const AI_ACTION_OPTIONS = [
+  { value: 'personalized_email',    label: 'Draft personalized re-engagement email' },
+  { value: 'score_candidate',       label: 'Score & rank candidate for open roles' },
+  { value: 'suggest_roles',         label: 'Suggest best-fit open roles' },
+  { value: 'summarize_profile',     label: 'Summarize candidate profile for recruiter' },
+  { value: 'generate_sms',          label: 'Generate personalized SMS follow-up' },
+  { value: 'full_reengagement',     label: 'Full AI-managed re-engagement sequence' },
+];
 
 const ALL_BOARDS: JobBoard[] = ['LinkedIn', 'Indeed', 'CareerBuilder', 'ZipRecruiter', 'Monster', 'Referral', 'Direct'];
 
@@ -116,19 +128,22 @@ function StepEditor({ step, index, onChange, onDelete }: StepEditorProps) {
             <option value="email">Email</option>
             <option value="sms">SMS</option>
             <option value="task">Task</option>
+            <option value="ai">Submit to AI</option>
           </select>
         </div>
 
-        {/* Send time */}
-        <div>
-          <label style={{ fontSize: 10, fontWeight: 700, color: '#64748b', display: 'block', marginBottom: 3, textTransform: 'uppercase' }}>Send Time</label>
-          <input
-            type="time"
-            value={step.sendTime}
-            onChange={e => onChange({ ...step, sendTime: e.target.value })}
-            style={{ width: '100%', border: '0.5px solid #d1d5db', borderRadius: 6, padding: '5px 8px', fontSize: 12 }}
-          />
-        </div>
+        {/* Send time — not shown for AI steps */}
+        {step.type !== 'ai' && (
+          <div>
+            <label style={{ fontSize: 10, fontWeight: 700, color: '#64748b', display: 'block', marginBottom: 3, textTransform: 'uppercase' }}>Send Time</label>
+            <input
+              type="time"
+              value={step.sendTime}
+              onChange={e => onChange({ ...step, sendTime: e.target.value })}
+              style={{ width: '100%', border: '0.5px solid #d1d5db', borderRadius: 6, padding: '5px 8px', fontSize: 12 }}
+            />
+          </div>
+        )}
 
         {/* Subject (email only) */}
         {step.type === 'email' && (
@@ -145,26 +160,100 @@ function StepEditor({ step, index, onChange, onDelete }: StepEditorProps) {
         )}
       </div>
 
-      {/* Message */}
-      <div style={{ marginTop: 10 }}>
-        <label style={{ fontSize: 10, fontWeight: 700, color: '#64748b', display: 'block', marginBottom: 3, textTransform: 'uppercase' }}>
-          {step.type === 'task' ? 'Task Description' : 'Message'}
-        </label>
-        <textarea
-          value={step.message}
-          onChange={e => onChange({ ...step, message: e.target.value })}
-          placeholder={
-            step.type === 'task'
-              ? 'Describe the manual task to be completed…'
-              : 'Use {{firstName}}, {{recruiterName}}, {{company}} as placeholders…'
-          }
-          rows={3}
-          style={{ width: '100%', border: '0.5px solid #d1d5db', borderRadius: 6, padding: '6px 8px', fontSize: 12, resize: 'vertical', fontFamily: 'inherit', boxSizing: 'border-box' }}
-        />
-        <p style={{ fontSize: 10, color: '#94a3b8', margin: '2px 0 0' }}>
-          Available tokens: {'{{firstName}}'} {'{{recruiterName}}'} {'{{company}}'}
-        </p>
-      </div>
+      {/* AI Step — special config panel */}
+      {step.type === 'ai' ? (
+        <div
+          style={{
+            marginTop: 12,
+            backgroundColor: '#f5f3ff',
+            border: '0.5px solid #ddd6fe',
+            borderRadius: 8,
+            padding: '12px 14px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 10 }}>
+            <Bot size={14} style={{ color: '#7c3aed' }} />
+            <span style={{ fontSize: 12, fontWeight: 700, color: '#5b21b6' }}>AI Agent Action</span>
+            <span
+              style={{
+                backgroundColor: '#ede9fe',
+                color: '#7c3aed',
+                borderRadius: 10,
+                padding: '1px 7px',
+                fontSize: 9,
+                fontWeight: 700,
+                marginLeft: 4,
+              }}
+            >
+              BETA
+            </span>
+          </div>
+          <div style={{ marginBottom: 10 }}>
+            <label style={{ fontSize: 10, fontWeight: 700, color: '#5b21b6', display: 'block', marginBottom: 4, textTransform: 'uppercase' }}>
+              What should the AI do?
+            </label>
+            <select
+              value={step.message}
+              onChange={e => onChange({ ...step, message: e.target.value })}
+              style={{ width: '100%', border: '0.5px solid #c4b5fd', borderRadius: 6, padding: '6px 10px', fontSize: 12, backgroundColor: 'white' }}
+            >
+              <option value="">Select an action…</option>
+              {AI_ACTION_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <div style={{ flex: 1 }}>
+              <label style={{ fontSize: 10, fontWeight: 700, color: '#5b21b6', display: 'block', marginBottom: 4, textTransform: 'uppercase' }}>
+                Trigger on Day
+              </label>
+              <input
+                type="number"
+                min={1}
+                value={step.day}
+                onChange={e => onChange({ ...step, day: parseInt(e.target.value) || 1 })}
+                style={{ width: '100%', border: '0.5px solid #c4b5fd', borderRadius: 6, padding: '5px 8px', fontSize: 12 }}
+              />
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ fontSize: 10, fontWeight: 700, color: '#5b21b6', display: 'block', marginBottom: 4, textTransform: 'uppercase' }}>
+                Time
+              </label>
+              <input
+                type="time"
+                value={step.sendTime}
+                onChange={e => onChange({ ...step, sendTime: e.target.value })}
+                style={{ width: '100%', border: '0.5px solid #c4b5fd', borderRadius: 6, padding: '5px 8px', fontSize: 12 }}
+              />
+            </div>
+          </div>
+          <p style={{ fontSize: 10, color: '#7c3aed', margin: '8px 0 0', lineHeight: 1.5 }}>
+            The AI agent will automatically analyze the candidate profile, match against open roles, and execute the selected action. Results are available in the AI activity log.
+          </p>
+        </div>
+      ) : (
+        /* Message for non-AI steps */
+        <div style={{ marginTop: 10 }}>
+          <label style={{ fontSize: 10, fontWeight: 700, color: '#64748b', display: 'block', marginBottom: 3, textTransform: 'uppercase' }}>
+            {step.type === 'task' ? 'Task Description' : 'Message'}
+          </label>
+          <textarea
+            value={step.message}
+            onChange={e => onChange({ ...step, message: e.target.value })}
+            placeholder={
+              step.type === 'task'
+                ? 'Describe the manual task to be completed…'
+                : 'Use {{firstName}}, {{recruiterName}}, {{company}} as placeholders…'
+            }
+            rows={3}
+            style={{ width: '100%', border: '0.5px solid #d1d5db', borderRadius: 6, padding: '6px 8px', fontSize: 12, resize: 'vertical', fontFamily: 'inherit', boxSizing: 'border-box' }}
+          />
+          <p style={{ fontSize: 10, color: '#94a3b8', margin: '2px 0 0' }}>
+            Available tokens: {'{{firstName}}'} {'{{recruiterName}}'} {'{{company}}'}
+          </p>
+        </div>
+      )}
 
       {/* Type badge */}
       <div style={{ position: 'absolute', top: 12, right: 36, display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -682,7 +771,9 @@ function CampaignCard({ rule, onEdit, onDelete, onToggle }: CardProps) {
                       <div style={{ fontSize: 10, color: '#94a3b8', fontWeight: 600 }}>Day {step.day}</div>
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginTop: 2 }}>
                         <span style={{ color: col.color }}>{STEP_ICONS[step.type]}</span>
-                        <span style={{ fontSize: 11, fontWeight: 700, color: col.color, textTransform: 'capitalize' }}>{step.type}</span>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: col.color, textTransform: step.type === 'ai' ? 'uppercase' : 'capitalize' }}>
+                          {step.type === 'ai' ? 'AI' : step.type}
+                        </span>
                       </div>
                       <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 1 }}>{step.sendTime}</div>
                     </div>
