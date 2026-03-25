@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo:*)",
+      "Bash(git init:*)",
+      "Bash(git remote:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(sed -i '' 's/^import { Candidate } from/import type { Candidate } from/g' src/data/mockCandidates.ts src/components/call-list/SummaryCards.tsx src/components/call-list/CandidateRow.tsx src/components/call-list/CandidateTable.tsx)",
+      "Bash(sed -i '' 's/^import { CandidateStatus, PassiveStatus }/import type { CandidateStatus, PassiveStatus }/g' src/components/call-list/StatusBadge.tsx)",
+      "Bash(sed -i '' 's/import { ActiveFilters, Candidate, PassiveFilters }/import type { ActiveFilters, Candidate, PassiveFilters }/g' src/components/call-list/CallListPage.tsx)",
+      "Bash(sed -i '' 's/import { CollapsibleFilterBar, FilterField }/import { CollapsibleFilterBar } from/g' src/components/call-list/CallListPage.tsx)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(git push:*)",
+      "Bash(docker --version)",
+      "Bash(docker compose:*)",
+      "Bash(docker info:*)",
+      "Bash(docker pull:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)"
+    ]
+  }
+}

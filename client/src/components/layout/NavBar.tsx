@@ -1,15 +1,29 @@
-const navLinks = [
-  { label: 'Home', active: false },
-  { label: 'Call list', active: true },
-  { label: 'Applicants', active: false },
-  { label: 'Calendar', active: false },
-  { label: 'Reports', active: false },
-  { label: 'SMS/Email', active: false },
-  { label: 'Settings', active: false },
-  { label: 'AI', active: false },
+import type { Page } from '../../App';
+
+interface NavLink {
+  label: string;
+  page: Page;
+  badge?: number;
+}
+
+const navLinks: NavLink[] = [
+  { label: 'Home',        page: 'home' },
+  { label: 'Applicants',  page: 'applicants' },
+  { label: 'Call List',   page: 'call-list' },
+  { label: 'Calendar',    page: 'calendar' },
+  { label: 'Reports',     page: 'reports' },
+  { label: 'SMS/Email',   page: 'sms-email' },
+  { label: 'Re-engage',   page: 'reengagement' },
+  { label: 'Settings',    page: 'settings' },
+  { label: 'AI',          page: 'ai' },
 ];
 
-export function NavBar() {
+interface NavBarProps {
+  currentPage: Page;
+  onNavigate: (page: Page) => void;
+}
+
+export function NavBar({ currentPage, onNavigate }: NavBarProps) {
   return (
     <nav
       style={{
@@ -22,26 +36,63 @@ export function NavBar() {
         height: 36,
       }}
     >
-      {/* Left links */}
+      {/* Left nav links */}
       <div className="flex items-center gap-1">
-        {navLinks.map((link) => (
-          <button
-            key={link.label}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '4px 10px',
-              borderRadius: 6,
-              fontWeight: link.active ? 600 : 400,
-              color: link.active ? '#2d7dd2' : '#475569',
-              backgroundColor: link.active ? '#eff6ff' : 'transparent',
-              fontSize: 13,
-            }}
-          >
-            {link.label}
-          </button>
-        ))}
+        {navLinks.map((link) => {
+          const isActive = currentPage === link.page;
+          // Accent color per section
+          const accentColor =
+            link.page === 'reengagement'
+              ? '#7c3aed'
+              : link.page === 'applicants'
+              ? '#0a66c2'
+              : '#2d7dd2';
+
+          return (
+            <button
+              key={link.page}
+              onClick={() => onNavigate(link.page)}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px 10px',
+                borderRadius: 6,
+                fontWeight: isActive ? 600 : 400,
+                color: isActive ? accentColor : '#475569',
+                backgroundColor: isActive
+                  ? link.page === 'reengagement'
+                    ? '#f5f3ff'
+                    : link.page === 'applicants'
+                    ? '#e8f0fe'
+                    : '#eff6ff'
+                  : 'transparent',
+                fontSize: 13,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 4,
+                transition: 'background 0.1s, color 0.1s',
+                position: 'relative',
+              }}
+            >
+              {link.label}
+              {/* Active underline indicator */}
+              {isActive && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    bottom: -4,
+                    left: 8,
+                    right: 8,
+                    height: 2,
+                    backgroundColor: accentColor,
+                    borderRadius: 1,
+                  }}
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Right buttons */}
@@ -57,6 +108,7 @@ export function NavBar() {
               color: '#374151',
               cursor: 'pointer',
               fontWeight: 500,
+              fontSize: 13,
             }}
           >
             {label}
@@ -71,6 +123,7 @@ export function NavBar() {
             padding: '4px 14px',
             cursor: 'pointer',
             fontWeight: 600,
+            fontSize: 13,
           }}
         >
           Mega Chat
