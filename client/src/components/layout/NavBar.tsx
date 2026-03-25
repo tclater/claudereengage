@@ -3,20 +3,29 @@ import type { Page } from '../../App';
 interface NavLink {
   label: string;
   page: Page;
-  badge?: number;
 }
 
 const navLinks: NavLink[] = [
-  { label: 'Home',        page: 'home' },
-  { label: 'Applicants',  page: 'applicants' },
-  { label: 'Call List',   page: 'call-list' },
-  { label: 'Calendar',    page: 'calendar' },
-  { label: 'Reports',     page: 'reports' },
-  { label: 'SMS/Email',   page: 'sms-email' },
-  { label: 'Re-engage',   page: 'reengagement' },
-  { label: 'Settings',    page: 'settings' },
-  { label: 'AI',          page: 'ai' },
+  { label: 'Home',       page: 'home' },
+  { label: 'Applicants', page: 'applicants' },
+  { label: 'Call List',  page: 'call-list' },
+  { label: 'Calendar',   page: 'calendar' },
+  { label: 'Pipeline',   page: 'pipeline' },
+  { label: 'Reports',    page: 'reports' },
+  { label: 'SMS/Email',  page: 'sms-email' },
+  { label: 'Re-engage',  page: 'reengagement' },
+  { label: 'Settings',   page: 'settings' },
+  { label: 'AI',         page: 'ai' },
 ];
+
+// Per-section accent colors
+const ACCENT: Partial<Record<Page, { color: string; bg: string }>> = {
+  applicants:   { color: '#0a66c2', bg: '#e8f0fe' },
+  calendar:     { color: '#be185d', bg: '#fdf2f8' },   // matches 1st interview pink
+  pipeline:     { color: '#0f766e', bg: '#f0fdfa' },
+  reengagement: { color: '#7c3aed', bg: '#f5f3ff' },
+};
+const DEFAULT_ACCENT = { color: '#2d7dd2', bg: '#eff6ff' };
 
 interface NavBarProps {
   currentPage: Page;
@@ -40,15 +49,7 @@ export function NavBar({ currentPage, onNavigate }: NavBarProps) {
       <div className="flex items-center gap-1">
         {navLinks.map((link) => {
           const isActive = currentPage === link.page;
-          // Accent color per section
-          const accentColor =
-            link.page === 'reengagement'
-              ? '#7c3aed'
-              : link.page === 'applicants'
-              ? '#0a66c2'
-              : link.page === 'calendar'
-              ? '#0f766e'
-              : '#2d7dd2';
+          const accent   = ACCENT[link.page] ?? DEFAULT_ACCENT;
 
           return (
             <button
@@ -61,16 +62,8 @@ export function NavBar({ currentPage, onNavigate }: NavBarProps) {
                 padding: '4px 10px',
                 borderRadius: 6,
                 fontWeight: isActive ? 600 : 400,
-                color: isActive ? accentColor : '#475569',
-                backgroundColor: isActive
-                  ? link.page === 'reengagement'
-                    ? '#f5f3ff'
-                    : link.page === 'applicants'
-                    ? '#e8f0fe'
-                    : link.page === 'calendar'
-                    ? '#f0fdfa'
-                    : '#eff6ff'
-                  : 'transparent',
+                color: isActive ? accent.color : '#475569',
+                backgroundColor: isActive ? accent.bg : 'transparent',
                 fontSize: 13,
                 display: 'flex',
                 alignItems: 'center',
@@ -80,7 +73,6 @@ export function NavBar({ currentPage, onNavigate }: NavBarProps) {
               }}
             >
               {link.label}
-              {/* Active underline indicator */}
               {isActive && (
                 <span
                   style={{
@@ -89,7 +81,7 @@ export function NavBar({ currentPage, onNavigate }: NavBarProps) {
                     left: 8,
                     right: 8,
                     height: 2,
-                    backgroundColor: accentColor,
+                    backgroundColor: accent.color,
                     borderRadius: 1,
                   }}
                 />

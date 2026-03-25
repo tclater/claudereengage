@@ -6,8 +6,19 @@ import { ApplicantsPage } from './components/applicants/ApplicantsPage';
 import { CallListPage } from './components/call-list/CallListPage';
 import { ReengagementPage } from './components/reengagement/ReengagementPage';
 import { PipelineBoardPage } from './components/pipeline/PipelineBoardPage';
+import { CalendarPage } from './components/calendar/CalendarPage';
 
-export type Page = 'applicants' | 'call-list' | 'reengagement' | 'home' | 'calendar' | 'reports' | 'sms-email' | 'settings' | 'ai';
+export type Page =
+  | 'applicants'
+  | 'call-list'
+  | 'calendar'
+  | 'pipeline'
+  | 'reengagement'
+  | 'home'
+  | 'reports'
+  | 'sms-email'
+  | 'settings'
+  | 'ai';
 
 function PlaceholderPage({ label }: { label: string }) {
   return (
@@ -26,8 +37,9 @@ function App() {
     switch (currentPage) {
       case 'applicants':   return <ApplicantsPage />;
       case 'call-list':    return <CallListPage />;
+      case 'calendar':     return <CalendarPage />;
+      case 'pipeline':     return <PipelineBoardPage />;
       case 'reengagement': return <ReengagementPage />;
-      case 'calendar':     return <PipelineBoardPage />;
       default:             return <PlaceholderPage label={currentPage.charAt(0).toUpperCase() + currentPage.slice(1)} />;
     }
   };

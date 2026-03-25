@@ -15,13 +15,16 @@ interface StageConfig {
 }
 
 const STAGES: StageConfig[] = [
-  { id: 'applied',    label: 'Applied',    color: '#1e40af', bg: '#eff6ff', headerBg: '#dbeafe', dotColor: '#3b82f6' },
-  { id: 'reviewing',  label: 'Reviewing',  color: '#5b21b6', bg: '#f5f3ff', headerBg: '#ede9fe', dotColor: '#8b5cf6' },
-  { id: 'call_list',  label: 'Call List',  color: '#0f766e', bg: '#f0fdfa', headerBg: '#ccfbf1', dotColor: '#14b8a6' },
-  { id: 'contacted',  label: 'Contacted',  color: '#92400e', bg: '#fffbeb', headerBg: '#fde68a', dotColor: '#f59e0b' },
-  { id: 'interview',  label: 'Interview',  color: '#be185d', bg: '#fdf2f8', headerBg: '#fbcfe8', dotColor: '#ec4899' },
-  { id: 'offer',      label: 'Offer',      color: '#15803d', bg: '#f0fdf4', headerBg: '#bbf7d0', dotColor: '#22c55e' },
-  { id: 'placed',     label: 'Placed',     color: '#1e3a8a', bg: '#eff6ff', headerBg: '#93c5fd', dotColor: '#1d4ed8' },
+  { id: 'applied',     label: 'Applied',       color: '#1e40af', bg: '#eff6ff', headerBg: '#dbeafe', dotColor: '#3b82f6' },
+  { id: 'reviewing',   label: 'Reviewing',     color: '#5b21b6', bg: '#f5f3ff', headerBg: '#ede9fe', dotColor: '#8b5cf6' },
+  { id: 'call_list',   label: 'Call List',     color: '#0f766e', bg: '#f0fdfa', headerBg: '#ccfbf1', dotColor: '#14b8a6' },
+  { id: 'contacted',   label: 'Contacted',     color: '#92400e', bg: '#fffbeb', headerBg: '#fde68a', dotColor: '#f59e0b' },
+  { id: 'interview_1', label: '1st Interview', color: '#be185d', bg: '#fdf2f8', headerBg: '#fbcfe8', dotColor: '#ec4899' },
+  { id: 'interview_2', label: '2nd Interview', color: '#c2410c', bg: '#fff7ed', headerBg: '#fed7aa', dotColor: '#fb923c' },
+  { id: 'interview_3', label: '3rd Interview', color: '#3730a3', bg: '#eef2ff', headerBg: '#c7d2fe', dotColor: '#818cf8' },
+  { id: 'interview_4', label: '4th Interview', color: '#6b21a8', bg: '#faf5ff', headerBg: '#e9d5ff', dotColor: '#c084fc' },
+  { id: 'offer',       label: 'Offer',         color: '#15803d', bg: '#f0fdf4', headerBg: '#bbf7d0', dotColor: '#22c55e' },
+  { id: 'placed',      label: 'Placed',        color: '#1e3a8a', bg: '#eff6ff', headerBg: '#93c5fd', dotColor: '#1d4ed8' },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
